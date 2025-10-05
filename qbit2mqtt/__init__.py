@@ -155,15 +155,24 @@ def monitor(qbit: qbittorrent.Client, client: mqtt.Client, discovery_config: Dis
             logging.debug(f'{topic} <- {message}')
             client.publish(topic, message)
 
+    def toggle_alternative_speed(c: qbittorrent.Client):
+        """
+        Toggle alternative speed limits.
+
+        NOTE: Library's toggle_alternative_speed sending GET request which causing 405 Method Not Allowed
+        on current version of qBitTorrent
+        """
+        return c._post('transfer/toggleSpeedLimitsMode', '')
+
     def on_message(c: mqtt.Client, x, message: mqtt.MQTTMessage):
         sensor = discovery_config.sensor_for_command_topic(message.topic)
         if sensor == 'alternative_speed':
             state = message.payload.decode()
             current_state = qbit.alternative_speed_status
             if current_state == 1 and state == 'off':
-                qbit.toggle_alternative_speed()
+                toggle_alternative_speed(qbit)
             elif current_state == 0 and state == 'on':
-                qbit.toggle_alternative_speed()
+                toggle_alternative_speed(qbit)
             new_state = qbit.alternative_speed_status
             logging.info(f'trigger alternative speed {current_state} -> {state} -> {new_state}')
             send_message(discovery_config.state_topic_of('alternative_speed'), 'on' if new_state == 1 else 'off')
