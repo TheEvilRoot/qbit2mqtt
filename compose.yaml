@@ -1,0 +1,5 @@
+services:
+  qbit2mqtt:
+    image: ghcr.io/theevilroot/qbit2mqtt:master
+    restart: unless-stopped
+    env_file: [ ./config.env ]

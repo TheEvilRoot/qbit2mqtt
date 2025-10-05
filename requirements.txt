@@ -1,0 +1,3 @@
+python-qbittorrent
+paho-mqtt
+urllib3
