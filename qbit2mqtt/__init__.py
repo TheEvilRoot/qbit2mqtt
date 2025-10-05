@@ -187,7 +187,7 @@ def monitor(qbit: qbittorrent.Client, client: mqtt.Client, discovery_config: Dis
         if datetime.datetime.now() - discovery_date > datetime.timedelta(seconds=DISCOVERY_INTERVAL):
             send_message(discovery_config.topic, discovery_config.build())
             discovery_date = datetime.datetime.now()
-            logging.info('Discovery message published')
+            logging.debug('Discovery message published')
         info = qbit.sync_main_data()
         srv_state = info['server_state']
         alternative_state = qbit.alternative_speed_status
